@@ -9,7 +9,7 @@
 \LoadClass{article}
 
 % Package Imports
-\usepackage[lmargin=0.9cm, vmargin=0.85cm, rmargin=0.9cm]{geometry}
+\usepackage[lmargin=0.9cm, vmargin=0.7cm, rmargin=0.9cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{graphicx}
@@ -201,7 +201,7 @@ Last Updated on \today
 \usepackage{titlesec}
 \titlespacing{\section}{0pt}{5pt}{5pt}
 \titlespacing{\subsection}{0pt}{0pt}{0pt}
-\newcommand{\sectionsep}{\vspace{5pt}}
+\newcommand{\sectionsep}{\vspace{2pt}}
 
 % Headings command
 \titleformat{\section}{\color{title}
@@ -240,6 +240,6 @@ Last Updated on \today
 
 % Bullet Lists with fewer gaps command
 \newenvironment{tightemize}{
-\vspace{-\topsep}\begin{itemize}[label=\ding{212}]\itemsep1pt \parskip0pt \parsep0pt}
-{\end{itemize}\vspace{-\topsep}}
+\begin{itemize}[label=\ding{212},topsep=0pt,itemsep=1pt,parsep=0pt,partopsep=0pt]}
+{\end{itemize}}
 

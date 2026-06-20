@@ -22,3 +22,56 @@ class AnalysisResponse(BaseModel):
     job_title: str
     created_at: str
     result: ATSAnalysisResult
+
+# --- Knowledge Vault Validation & Response Schemas ---
+
+class ProjectCreate(BaseModel):
+    experience_id: Optional[int] = Field(None, description="Linked Job Experience ID")
+    title: str = Field(..., min_length=2, max_length=150)
+    description: str = Field(..., min_length=10)
+    repository_url: Optional[str] = Field(None)
+
+class ProjectResponse(BaseModel):
+    id: int
+    experience_id: Optional[int]
+    title: str
+    description: str
+    repository_url: Optional[str]
+
+class AchievementCreate(BaseModel):
+    action_taken: str = Field(..., min_length=5)
+    outcome_metric: Optional[str] = Field(None)
+    raw_bullet_text: str = Field(..., min_length=10)
+    technologies: List[str] = Field(default_factory=list)
+    skills: List[str] = Field(default_factory=list)
+
+class ExperienceCreate(BaseModel):
+    company_name: str = Field(..., min_length=2)
+    role_title: str = Field(..., min_length=2)
+    start_date: str = Field(..., description="Format: YYYY-MM")
+    end_date: Optional[str] = Field(None, description="Format: YYYY-MM")
+    employment_type: str = Field(..., description="Must be 'Full-time', 'Contract', 'Part-time', or 'Internship'")
+
+class ExperienceResponse(BaseModel):
+    id: int
+    company_name: str
+    role_title: str
+    start_date: str
+    end_date: Optional[str]
+    employment_type: str
+
+class ExtractedAchievement(BaseModel):
+    action_taken: str = Field(description="The technical task or action completed.")
+    outcome_metric: Optional[str] = Field(description="Quantifiable business metric or system optimization.")
+    raw_bullet_text: str = Field(description="The formatted STAR bullet point.")
+    technologies: List[str] = Field(description="Technologies used in this achievement.")
+    skills: List[str] = Field(description="High-level capabilities demonstrated.")
+
+class KnowledgeExtractionResponse(BaseModel):
+    entity_type: str = Field(description="Must be 'project', 'experience', or 'credential'.")
+    title: str = Field(description="Extracted title of the entry.")
+    description: str = Field(description="Extracted description of the entry.")
+    technologies: List[str] = Field(description="All technologies used.")
+    skills: List[str] = Field(description="All general skills used.")
+    achievements: List[ExtractedAchievement] = Field(description="List of structured achievements.")
+

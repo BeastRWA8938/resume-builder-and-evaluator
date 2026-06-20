@@ -7,7 +7,7 @@ from pathlib import Path
 
 from backend.app.config import validate_config
 from backend.app.database import init_db
-from backend.app.routes import analyze, history, generator
+from backend.app.routes import analyze, history, generator, vault
 
 # Initialize database
 init_db()
@@ -37,6 +37,7 @@ app.add_middleware(
 app.include_router(analyze.router)
 app.include_router(history.router)
 app.include_router(generator.router)
+app.include_router(vault.router)
 
 # Setup Frontend static directories dynamically if they exist
 FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"

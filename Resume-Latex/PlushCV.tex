@@ -1,38 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% PlushCV - One Page Two Column Resume
-% LaTeX Template
-% Version 1.0 (11/28/2021)
-%
-% Author:
-% Shubham Mazumder (http://mazumder.me)
-%
-% Hacked together from:
-% https://github.com/deedydas/Deedy-Resume
-%
-% IMPORTANT: THIS TEMPLATE NEEDS TO BE COMPILED WITH XeLaTeX
-%
-% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% TODO:
-% 1. Figure out a smoother way for the document to flow onto the next page.
-% 3. Add more icon options 
-% 4. Fix hacky left alignment on contact line
-% 5. Remove Hacky fix for awkward extra vertical space
-% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% CHANGELOG:
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Known Issues:
-% 1. Overflows onto second page if any column's contents are more than the vertical limit.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%Icons:
-%%Main: https://icons8.com/icons/carbon-copy
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[]{plushcv}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -47,15 +12,13 @@
 
 \namesection{\fontsize{35}{45}\selectfont Rushikesh}{\fontsize{35}{45}\selectfont Waghmode}{AI/ML Engineer}{\fontsize{10}{20}\selectfont\contactline{\href{https://www.github.com/BeastRWA8938}{BeastRWA8938}}{\href{https://www.linkedin.com/in/rushikesh-waghmode-967162239/}{li-Rushikesh}}{\href{mailto:rushikeshwaghmode688@gmail.com}{rushikeshwaghmode688@gmail.com}}{\href{tel:+917620451904}{7620451904}}}
 
-% \namesection{Firstname}{Lastname}{Full Stack Software Engineer}{\contactline{\href{https://www.mazumder.me}{mazumder.me}}{\href{https://www.github.com/sansquoi}{sansquoi}}{\href{https://www.linkedin.com/mazumders}{mazumders}}{\href{mailto:shubham.mazumder@gmail.com}{first.last@email.com}}{\href{tel:+1999999999}{9999999999}}}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %     COLUMN ONE
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{minipage}[t]{0.80\textwidth} 
+\begin{minipage}[t]{0.68\textwidth} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,12 +30,10 @@
 \runsubsection{QodeAris Pvt. Ltd.}
 \descript{| R\&D Intern}
 \location{Sep 2025 – Mar 2026 | Pune, Maharashtra, India}
-\vspace{\topsep}
 \begin{tightemize}
-\sectionsep
-\item Architected a secure end-to-end IoT system connecting ESP32 devices to AWS IoT Core via a Node.js backend using MQTT over TLS, implementing Fleet Provisioning for automated device onboarding and certificate management.
-\item Developed and deployed a solar-powered, cellular-connected autonomous weather station using ESP32 and LTE modem, integrating RS485 sensors and optimizing power usage with deep sleep cycles.
-\item Secured backend infrastructure with AWS API Gateway and IAM (SigV4), while debugging critical issues including MQTT buffer limits, and AWS policy mismatches in production systems.
+\item Architected secure IoT data pipelines connecting ESP32 devices to AWS IoT Core, implementing automated Fleet Provisioning and certificate lifecycle management.
+\item Deployed solar-powered weather stations with cellular modems, optimizing data transmission and power management via deep sleep cycles.
+\item Configured AWS API Gateway and IAM (SigV4) to secure backend APIs, resolving critical MQTT payload and policy mismatches.
 \end{tightemize}
 \sectionsep
 
@@ -80,12 +41,10 @@
 \runsubsection{Arusan Automation}
 \descript{| R\&D Intern}
 \location{Jun 2024 – Aug 2024 | Pune, Maharashtra, India (Remote/Hybrid)}
-\vspace{\topsep}
 \begin{tightemize}
-\sectionsep
-\item Designed and developed multiple hardware–software integrated projects including Smart Blind Stick, ESP32 Cloud Data Logger, Weight Measuring Device, Smart Glasses (prototype), and KalaChakra Smart Bell System.
-\item Programmed ESP32-based IoT and automation systems in C++ (Arduino IDE), integrating sensors, actuators, cloud connectivity, and real-time communication.
-\item Prototyped AI-based assistive applications in Python, implementing OCR, facial recognition (DeepFace), and voice command modules.
+\item Developed Edge AI computer vision models using Edge Impulse, performing dataset collection, manual labeling, and hyperparameter tuning.
+\item Programmed ESP32-based automation systems in C++ (Arduino IDE), integrating real-time sensor data acquisition and cloud logging.
+\item Prototyped Python-based assistive vision applications featuring face recognition (DeepFace), OCR (Tesseract), and voice commands.
 \end{tightemize}
 \sectionsep
 
@@ -94,10 +53,9 @@
 \descript{| Web Scraping Intern }
 \location{Jun 2023 – Oct 2023 | Pune, Maharashtra, India (Remote)}
 \begin{tightemize}
-\sectionsep
-\item Extracted, organized, and analyzed electoral data from government websites, streamlining data collection.
-\item Automated repetitive tasks to increase efficiency, reducing manual data entry by 40 times.
-\item Developed scripts to enhance the speed of data extraction, enabling faster decision-making.
+\item Automated large-scale electoral data collection from government portals using Python and Selenium, reducing manual effort by 40x.
+\item Built OCR-based CAPTCHA bypass pipelines with image preprocessing (grayscale, thresholding, noise reduction) to ensure pipeline stability.
+\item Packaged Python automation scripts into standalone executables using PyInstaller to enable seamless deployment for non-technical staff.
 \end{tightemize}
 \sectionsep
 
@@ -108,47 +66,39 @@
 
 \section{Projects}
 
-\runsubsection{WAREHOUSE AUTONOMY USING MARL}
-\descript{| UNITY, PYTHON, DRQN, LSTM}
+\runsubsection{Warehouse Autonomy (MARL)}
+\descript{| Unity, Python, PyTorch, DRQN, LSTM}
 \location{Final Year Project | 2025 -- 2026}
 \begin{tightemize}
-\item Developing a MARL framework in Unity for autonomous warehouse robot navigation using DRQN and LSTM-based decision systems.
-\item Optimizing reward shaping, agent coordination, and pathfinding in partially observable environments.
-\item Simulating dynamic warehouse layouts with multiple cooperative agents to improve task allocation and collision avoidance efficiency.
+\item Developed a Multi-Agent Reinforcement Learning framework in Unity using PyTorch DRQN and LSTM memory (sequence length 64) for autonomous navigation.
+\item Optimizing training with Potential-Based Reward Shaping (PBRS) and Centralized Training Decentralized Execution (CTDE) parameter sharing.
+\item Implemented Human-in-the-Loop (HITL) training, allowing real-time manual intervention to seed the replay buffer with expert demonstrations.
 \end{tightemize}
 \sectionsep
 
-\runsubsection{CANE VISION}
-\descript{| IoT, MACHINE LEARNING}
+\runsubsection{Pacman RL Environment (DQN)}
+\descript{| Python, FastAPI, WebSockets, React}
+\location{2024}
+\begin{tightemize}
+\item Built a custom Pacman RL environment and DQN agent from scratch in Python, utilizing a 4-channel tensor state representation to avoid mathematical bias.
+\item Designed an epsilon-greedy exploration strategy and target network to stabilize Q-value convergence over 1,500 training episodes.
+\item Created a real-time training visualizer using FastAPI, WebSockets, and React to stream live agent states and training metrics.
+\end{tightemize}
+\sectionsep
+
+\runsubsection{HOME SERVER with DOCKER}
+\descript{| DOCKER, LINUX, NETWORKING}
 \location{2023}
 \begin{tightemize}
-\item Developed a smart blind stick using ESP32, ESP32-CAM, and ultrasonic sensors; presented at I3CEET and filed for a design patent.
-\item Implemented object detection and obstacle awareness features with haptic feedback to assist visually impaired users during navigation.
-\item Integrated embedded hardware, sensor communication, and real-time alert systems for practical outdoor usability.
+\item Configured a self-hosted Ubuntu server running containerized services (Jellyfin, Radarr, Sonarr) managed via Docker Compose and Portainer.
+\item Resolved container communication timeouts by implementing service-name-based routing instead of static IP configurations.
 \end{tightemize}
 \sectionsep
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     AWARDS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \section{Awards} 
-% \begin{tabular}{rll}
-% 2020	     & Finalist & Lorem Ipsum\\
-% 2018	     & $2^{nd}$ & Dolor Sit Amet\\
-% 2015	     & Finalist  & Cras posuere\\
-% \\
-% \end{tabular}
-% \sectionsep
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%     COLUMN TWO
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{minipage} 
 \hfill
-\begin{minipage}[t]{0.25\textwidth} 
+\begin{minipage}[t]{0.28\textwidth} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     SKILLS
@@ -158,30 +108,26 @@
 
 \subsection{Programming}
 \sectionsep
-Python \textbullet{} JavaScript \textbullet{} Java \textbullet{} SQL 
-\textbullet{} HTML \textbullet{} CSS \textbullet{} Embedded C \textbullet{} MicroPython
+Python \textbullet{} SQL \textbullet{} Embedded C \textbullet{} JavaScript \textbullet{} Java \textbullet{} HTML/CSS \textbullet{} MicroPython
 
 \sectionsep
 
-\subsection{AI/ML \& Agentic AI}
+\subsection{AI/ML \& MLOps}
 \sectionsep
-RAG \textbullet{} Agentic AI Systems 
-\textbullet{} LLM Integration \textbullet{} Prompt Engineering \textbullet{} Model Evaluation \textbullet{} AI Workflows
+Reinforcement Learning \textbullet{} Deep Q-Networks \textbullet{} Object Detection \textbullet{} Reward Shaping \textbullet{} Dataset Labeling \textbullet{} Docker 
 
 \sectionsep
 
-\subsection{Libraries/Frameworks}
+\subsection{Libraries}
 \sectionsep
- TensorFlow \textbullet{} PyTorch 
-\textbullet{} LangChain \textbullet{} Hugging Face Transformers \textbullet{} React
+PyTorch \textbullet{} TensorFlow \textbullet{} Edge Impulse \textbullet{} OpenCV \textbullet{} FastAPI \textbullet{} React \textbullet{} Selenium
 
 \sectionsep
 
 \subsection{Tools/Platforms}
 \sectionsep
-Git \textbullet{} REST APIs \textbullet{} Vector Databases 
- \textbullet{} Microcontrollers \textbullet{} Sensors 
-\textbullet{} CAD
+Git \textbullet{} AWS IoT Core \textbullet{} Linux/Ubuntu \textbullet{} WebSockets \textbullet{} Microcontrollers \textbullet{} Portainer
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     EDUCATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,7 +135,7 @@ Git \textbullet{} REST APIs \textbullet{} Vector Databases
 \section{Education}
 
 \subsection{DY Patil International University}
-\descript{Bachelor's in Computer Science (AI Specialization)}
+\descript{Bachelor's in Computer Science (AI Specialization) - 90.4\%}
 \location{Aug 2022 - Present | Pune, Maharashtra}
 School of Computer Science Engg. \& Applications \\
 \location{India}
@@ -202,38 +148,10 @@ Physics, Chemistry and Mathematics with Information Technology \\
 
 \sectionsep
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %     REFERENCES
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Awards and Recognition} 
+\section{Awards}
 \textbullet{}Memristor Nano-Finger Research: Presented at ACMESGA 2k24 Conference\\
 \textbullet{}Cane Vision: Presented at the I3CEET\\
 \textbullet{}DYPIU Excellence Award Scholarship \\
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     COURSEWORK
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \section{Coursework}
-
-% \subsection{Graduate}
-% Graduate Algorithms \textbullet{}\\ 
-% Advanced Computer Architecture \textbullet{}\\ 
-% Operating Systems \textbullet{}\\ 
-% Artificial Intelligence \textbullet{}\\
-% Visualization For Scientific Data \\
-% \sectionsep
-
-% \subsection{Undergraduate}
-
-% Database Management Systems \textbullet{}\\
-% Object Oriented Analysis and Design \textbullet{}\\
-% Artificial Intelligence and Expert Systems \textbullet{}\\
-% Scripting Languages and Web Tech \textbullet{}\\
-% Software Engineering \\
-
 \end{minipage} 
-\end{document}  \documentclass[]{article}
-
+\end{document}

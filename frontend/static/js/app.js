@@ -7,28 +7,36 @@ document.addEventListener("DOMContentLoaded", () => {
     // Tab Navigation Switching
     // ==========================================================================
     const tabs = {
+        vault: document.getElementById("tab-vault"),
         ats: document.getElementById("tab-ats"),
         generator: document.getElementById("tab-generator")
     };
     
     const views = {
+        vault: document.getElementById("view-vault"),
         ats: document.getElementById("view-ats"),
         generator: document.getElementById("view-generator")
     };
 
-    tabs.ats.addEventListener("click", () => {
-        tabs.ats.classList.add("active");
-        tabs.generator.classList.remove("active");
-        views.ats.style.display = "flex";
-        views.generator.style.display = "none";
-    });
+    function switchTab(activeTabKey) {
+        Object.keys(tabs).forEach(key => {
+            if (key === activeTabKey) {
+                tabs[key].classList.add("active");
+                views[key].style.display = "flex";
+            } else {
+                tabs[key].classList.remove("active");
+                views[key].style.display = "none";
+            }
+        });
+        
+        if (activeTabKey === "vault") {
+            loadVaultExplorer();
+        }
+    }
 
-    tabs.generator.addEventListener("click", () => {
-        tabs.generator.classList.add("active");
-        tabs.ats.classList.remove("active");
-        views.generator.style.display = "flex";
-        views.ats.style.display = "none";
-    });
+    tabs.vault.addEventListener("click", () => switchTab("vault"));
+    tabs.ats.addEventListener("click", () => switchTab("ats"));
+    tabs.generator.addEventListener("click", () => switchTab("generator"));
 
     // ==========================================================================
     // ATS Scanner Component
@@ -806,6 +814,360 @@ document.addEventListener("DOMContentLoaded", () => {
                 makerElements.errorLogContainer.classList.add("hidden");
                 makerElements.errorLog.textContent = "";
             }
+        }
+    }
+
+    // ==========================================================================
+    // Knowledge Vault Component
+    // ==========================================================================
+    const vaultElements = {
+        apiKeyInput: document.getElementById("vaultApiKeyInput"),
+        rawKnowledgeDraft: document.getElementById("rawKnowledgeDraft"),
+        extractVaultBtn: document.getElementById("extractVaultBtn"),
+        
+        dashboardSection: document.getElementById("vaultDashboard"),
+        reviewSection: document.getElementById("vaultReviewSection"),
+        explorerSection: document.getElementById("vaultExplorer"),
+        
+        reviewEntityType: document.getElementById("reviewEntityType"),
+        reviewTitle: document.getElementById("reviewTitle"),
+        reviewTitleLabel: document.getElementById("reviewTitleLabel"),
+        reviewDescription: document.getElementById("reviewDescription"),
+        reviewAchievementsContainer: document.getElementById("reviewAchievementsContainer"),
+        saveVaultBtn: document.getElementById("saveVaultBtn"),
+        cancelReviewBtn: document.getElementById("cancelReviewBtn"),
+        
+        explorerGrid: document.getElementById("explorerGrid"),
+        filterBtns: document.querySelectorAll(".filter-btn")
+    };
+
+    let activeExtractionData = null;
+    let explorerFilter = "all";
+
+    initVault();
+
+    function initVault() {
+        registerVaultEventListeners();
+        loadVaultApiKey();
+        loadVaultExplorer();
+    }
+
+    function loadVaultApiKey() {
+        const savedApiKey = localStorage.getItem("gemini_api_key");
+        if (savedApiKey) {
+            vaultElements.apiKeyInput.value = savedApiKey;
+        }
+    }
+
+    function registerVaultEventListeners() {
+        vaultElements.apiKeyInput.addEventListener("change", () => {
+            const key = vaultElements.apiKeyInput.value.trim();
+            localStorage.setItem("gemini_api_key", key);
+            if (atsElements && atsElements.atsApiKeyInput) atsElements.atsApiKeyInput.value = key;
+            if (makerElements && makerElements.apiKeyInput) makerElements.apiKeyInput.value = key;
+        });
+
+        vaultElements.extractVaultBtn.addEventListener("click", performExtraction);
+        vaultElements.cancelReviewBtn.addEventListener("click", cancelReview);
+        vaultElements.saveVaultBtn.addEventListener("click", saveExtraction);
+        
+        vaultElements.reviewEntityType.addEventListener("change", () => {
+            const type = vaultElements.reviewEntityType.value;
+            vaultElements.reviewTitleLabel.textContent = type === "project" ? "Project Title" : "Company Name";
+        });
+
+        vaultElements.filterBtns.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                vaultElements.filterBtns.forEach(b => b.classList.remove("active"));
+                e.target.classList.add("active");
+                explorerFilter = e.target.dataset.filter;
+                loadVaultExplorer();
+            });
+        });
+    }
+
+    async function performExtraction() {
+        const rawText = vaultElements.rawKnowledgeDraft.value.trim();
+        if (!rawText) {
+            alert("Please type or paste some context first.");
+            return;
+        }
+
+        vaultElements.extractVaultBtn.disabled = true;
+        vaultElements.extractVaultBtn.querySelector("span").textContent = "Extracting Structuring Details...";
+
+        try {
+            const response = await fetch("/api/vault/extract", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    raw_text: rawText,
+                    gemini_api_key: vaultElements.apiKeyInput.value.trim()
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.detail || "AI Extraction failed.");
+            }
+
+            activeExtractionData = await response.json();
+            displayExtractionReview();
+        } catch (e) {
+            alert(`Error: ${e.message}`);
+        } finally {
+            vaultElements.extractVaultBtn.disabled = false;
+            vaultElements.extractVaultBtn.querySelector("span").textContent = "Extract & Structure Draft";
+        }
+    }
+
+    function displayExtractionReview() {
+        vaultElements.dashboardSection.style.display = "none";
+        vaultElements.explorerSection.style.display = "none";
+        vaultElements.reviewSection.style.display = "block";
+
+        const data = activeExtractionData;
+        vaultElements.reviewEntityType.value = data.entity_type || "project";
+        vaultElements.reviewTitle.value = data.title || "";
+        vaultElements.reviewDescription.value = data.description || "";
+        vaultElements.reviewTitleLabel.textContent = data.entity_type === "experience" ? "Company Name" : "Project Title";
+
+        renderReviewAchievements(data.achievements || []);
+    }
+
+    function renderReviewAchievements(achievements) {
+        const container = vaultElements.reviewAchievementsContainer;
+        container.innerHTML = "";
+
+        if (achievements.length === 0) {
+            container.innerHTML = "<p class='text-muted'>No achievements extracted.</p>";
+            return;
+        }
+
+        achievements.forEach((ach, index) => {
+            const card = document.createElement("div");
+            card.className = "glass-card";
+            card.style.margin = "12px 0";
+            card.style.padding = "12px";
+            card.style.background = "rgba(255, 255, 255, 0.02)";
+            card.style.border = "1px solid rgba(255, 255, 255, 0.05)";
+
+            card.innerHTML = `
+                <div class="form-group">
+                    <label>Action Taken</label>
+                    <input type="text" class="ach-action" value="${ach.action_taken || ""}" style="width:100%; margin-bottom:8px;">
+                </div>
+                <div class="form-group">
+                    <label>Outcome Metric (Optional)</label>
+                    <input type="text" class="ach-metric" value="${ach.outcome_metric || ""}" style="width:100%; margin-bottom:8px;">
+                </div>
+                <div class="form-group">
+                    <label>Raw Bullet Text</label>
+                    <textarea class="ach-bullet" style="width:100%; height:60px; margin-bottom:8px;">${ach.raw_bullet_text || ""}</textarea>
+                </div>
+                <div class="form-row" style="display:flex; gap:8px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Technologies (Comma separated)</label>
+                        <input type="text" class="ach-techs" value="${(ach.technologies || []).join(', ')}" style="width:100%;">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Skills (Comma separated)</label>
+                        <input type="text" class="ach-skills" value="${(ach.skills || []).join(', ')}" style="width:100%;">
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function cancelReview() {
+        activeExtractionData = null;
+        vaultElements.reviewSection.style.display = "none";
+        vaultElements.dashboardSection.style.display = "block";
+        vaultElements.explorerSection.style.display = "block";
+        vaultElements.rawKnowledgeDraft.value = "";
+    }
+
+    async function saveExtraction() {
+        const entityType = vaultElements.reviewEntityType.value;
+        const title = vaultElements.reviewTitle.value.trim();
+        const description = vaultElements.reviewDescription.value.trim();
+
+        if (!title || !description) {
+            alert("Title and Description are required fields.");
+            return;
+        }
+
+        const payloadData = {
+            title,
+            description
+        };
+
+        if (entityType === "project") {
+            const achCards = vaultElements.reviewAchievementsContainer.querySelectorAll(".glass-card");
+            const achievements = [];
+            
+            achCards.forEach((card, idx) => {
+                const action_taken = card.querySelector(".ach-action").value.trim();
+                const outcome_metric = card.querySelector(".ach-metric").value.trim() || null;
+                const raw_bullet_text = card.querySelector(".ach-bullet").value.trim();
+                const techs = card.querySelector(".ach-techs").value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                const skills = card.querySelector(".ach-skills").value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+                if (action_taken && raw_bullet_text) {
+                    achievements.push({
+                        action_taken,
+                        outcome_metric,
+                        raw_bullet_text,
+                        display_order: idx,
+                        technologies: techs,
+                        skills: skills
+                    });
+                }
+            });
+
+            payloadData.achievements = achievements;
+        } else if (entityType === "experience") {
+            payloadData.company_name = title;
+            payloadData.role_title = description;
+            payloadData.employment_type = "Full-time";
+            payloadData.start_date = new Date().toISOString().substring(0, 7);
+        }
+
+        vaultElements.saveVaultBtn.disabled = true;
+        vaultElements.saveVaultBtn.textContent = "Saving...";
+
+        try {
+            const response = await fetch("/api/vault/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    entity_type: entityType,
+                    data: payloadData
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.detail || "Failed to save record.");
+            }
+
+            cancelReview();
+            loadVaultExplorer();
+        } catch (e) {
+            alert(`Error: ${e.message}`);
+        } finally {
+            vaultElements.saveVaultBtn.disabled = false;
+            vaultElements.saveVaultBtn.textContent = "Confirm & Save to Vault";
+        }
+    }
+
+    async function loadVaultExplorer() {
+        const grid = vaultElements.explorerGrid;
+        if (!grid) return;
+        grid.innerHTML = "<p class='text-muted'>Loading explorer...</p>";
+
+        try {
+            let projects = [];
+            let experiences = [];
+
+            if (explorerFilter === "all" || explorerFilter === "projects") {
+                const res = await fetch("/api/vault/projects");
+                if (res.ok) projects = await res.json();
+            }
+
+            if (explorerFilter === "all" || explorerFilter === "experiences") {
+                const res = await fetch("/api/vault/experiences");
+                if (res.ok) experiences = await res.json();
+            }
+
+            grid.innerHTML = "";
+
+            if (projects.length === 0 && experiences.length === 0) {
+                grid.innerHTML = "<p class='text-muted' style='grid-column: 1/-1;'>No records logged in the vault yet.</p>";
+                return;
+            }
+
+            projects.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "glass-card project-card";
+                card.style.padding = "16px";
+                card.style.display = "flex";
+                card.style.flexDirection = "column";
+                card.style.justifyContent = "space-between";
+
+                let techTags = "";
+                const techs = new Set();
+                p.achievements.forEach(a => a.technologies.forEach(t => techs.add(t)));
+                techs.forEach(t => {
+                    techTags += `<span class="tag tag-match" style="font-size:10px; margin-right:4px; margin-bottom:4px;">${t}</span>`;
+                });
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="badge" style="background:#4285f4; color:#fff;">Project</span>
+                            <button class="btn-clear-file delete-proj-btn" data-id="${p.id}" style="padding:4px; color:var(--text-muted); background:none; border:none; cursor:pointer;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <h4 style="margin: 8px 0 4px 0; font-family:var(--font-brand); font-size:18px;">${p.title}</h4>
+                        <p style="font-size:13px; color:var(--text-muted); line-height:1.4; margin-bottom:12px;">${p.description}</p>
+                        <div style="display:flex; flex-wrap:wrap;">${techTags}</div>
+                    </div>
+                `;
+
+                card.querySelector(".delete-proj-btn").addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    if (confirm(`Are you sure you want to delete the project '${p.title}'?`)) {
+                        const res = await fetch(`/api/vault/projects/${p.id}`, { method: "DELETE" });
+                        if (res.ok) loadVaultExplorer();
+                    }
+                });
+
+                grid.appendChild(card);
+            });
+
+            experiences.forEach(exp => {
+                const card = document.createElement("div");
+                card.className = "glass-card experience-card";
+                card.style.padding = "16px";
+                card.style.display = "flex";
+                card.style.flexDirection = "column";
+                card.style.justifyContent = "space-between";
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="badge" style="background:#34a853; color:#fff;">Experience</span>
+                            <button class="btn-clear-file delete-exp-btn" data-id="${exp.id}" style="padding:4px; color:var(--text-muted); background:none; border:none; cursor:pointer;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <h4 style="margin: 8px 0 4px 0; font-family:var(--font-brand); font-size:18px;">${exp.company_name}</h4>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">${exp.role_title}</p>
+                        <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted);">${exp.start_date} - ${exp.end_date || 'Present'}</p>
+                    </div>
+                `;
+
+                card.querySelector(".delete-exp-btn").addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    if (confirm(`Are you sure you want to delete experience '${exp.company_name}'?`)) {
+                        const res = await fetch(`/api/vault/experiences/${exp.id}`, { method: "DELETE" });
+                        if (res.ok) loadVaultExplorer();
+                    }
+                });
+
+                grid.appendChild(card);
+            });
+        } catch (e) {
+            grid.innerHTML = `<p class='text-muted'>Failed to load workspace data: ${e.message}</p>`;
         }
     }
 });

@@ -23,12 +23,11 @@
                 </svg>
             </div>
             <div class="nav-tabs">
-                <button class="nav-tab-btn active" id="tab-ats" title="ATS Scan & Analysis">
+                <button class="nav-tab-btn active" id="tab-vault" title="Knowledge Vault">
                     <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                     </svg>
-                    <span class="tab-label">ATS Scanner</span>
+                    <span class="tab-label">Knowledge Vault</span>
                 </button>
                 <button class="nav-tab-btn" id="tab-generator" title="LaTeX Resume Tailoring">
                     <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -37,14 +36,157 @@
                     </svg>
                     <span class="tab-label">Resume Maker</span>
                 </button>
+                <button class="nav-tab-btn" id="tab-ats" title="ATS Scan & Analysis">
+                    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span class="tab-label">ATS Scanner</span>
+                </button>
             </div>
         </nav>
 
         <!-- 2. Workspace Area containing the views -->
         <div class="app-workspace">
             
+            <!-- VIEW C: Knowledge Vault -->
+            <div class="workspace-view active" id="view-vault">
+                <main class="main-content">
+                    <header class="app-header">
+                        <div class="header-left">
+                            <h1 class="brand">Knowledge<span class="gradient-text">Vault</span> <span class="badge">V1 Cache</span></h1>
+                        </div>
+                        <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+                            <div class="api-key-config">
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                                    </svg>
+                                    <input type="password" id="vaultApiKeyInput" placeholder="Enter Gemini API Key (Optional if set in .env)">
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="scroll-container">
+                        <!-- Dashboard Panel -->
+                        <section class="section-container" id="vaultDashboard">
+                            <div class="intro-box">
+                                <h2>Your Structured Career Knowledge Base</h2>
+                                <p>Ingest raw career notes, verify extracted metadata, and browse your personal repository of achievements, work experiences, and projects.</p>
+                            </div>
+
+                            <div class="grid-layout">
+                                <!-- Quick Capture Card -->
+                                <div class="glass-card panel-job">
+                                    <div class="card-header">
+                                        <span class="step-num">01</span>
+                                        <h3>Quick Log Capture</h3>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="rawKnowledgeDraft">Raw Text Accomplishment / Draft</label>
+                                        <textarea id="rawKnowledgeDraft" placeholder="Type or paste details (e.g. 'Built an automated pipeline using GitHub Actions to deploy containerised APIs, cutting deploy times in half...')" style="height: 160px;"></textarea>
+                                    </div>
+                                    <button class="btn-primary btn-full-width" id="extractVaultBtn">
+                                        <span>Extract & Structure Draft</span>
+                                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" class="arrow-icon">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Quality Diagnostics Card -->
+                                <div class="glass-card panel-resume">
+                                    <div class="card-header">
+                                        <span class="step-num">02</span>
+                                        <h3>Vault Quality & Diagnostics</h3>
+                                    </div>
+                                    <div class="diagnostics-summary" style="margin-top: 16px;">
+                                        <div class="api-key-indicator ready" style="margin-bottom: 12px; display: inline-flex;">
+                                            <span class="dot"></span>
+                                            <span class="status-text">Database Health: Optimal (WAL Cache Active)</span>
+                                        </div>
+                                        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">V1 Ingestion stores and normalizes structures for experiences, projects, and achievements. Focus on logging achievements with STAR metrics for optimal resume readiness.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Review Ingestion Panel (hidden initially) -->
+                        <section class="section-container" id="vaultReviewSection" style="display: none;">
+                            <div class="results-action-bar">
+                                <button class="btn-text" id="cancelReviewBtn">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                                        <polyline points="12 19 5 12 12 5"></polyline>
+                                    </svg>
+                                    <span>Cancel review</span>
+                                </button>
+                                <span class="scanned-meta">Review AI Extraction Proposal</span>
+                            </div>
+
+                            <div class="grid-layout">
+                                <!-- Left column: Extracted metadata Form -->
+                                <div class="glass-card panel-job">
+                                    <div class="card-header">
+                                        <h3>Entity Configurations</h3>
+                                    </div>
+                                    <div class="form-group" style="margin-top: 14px;">
+                                        <label for="reviewEntityType">Classification</label>
+                                        <select id="reviewEntityType" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: var(--text-primary);">
+                                            <option value="project">Project</option>
+                                            <option value="experience">Experience</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reviewTitle" id="reviewTitleLabel">Project Title</label>
+                                        <input type="text" id="reviewTitle" placeholder="e.g. Vector Search API">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reviewDescription">Description</label>
+                                        <textarea id="reviewDescription" style="height: 100px;"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Right column: Achievements & Skills review -->
+                                <div class="glass-card panel-resume">
+                                    <div class="card-header">
+                                        <h3>Achievements & Technologies</h3>
+                                    </div>
+                                    <div id="reviewAchievementsContainer" style="margin-top: 14px;">
+                                        <!-- Dynamic inputs will go here -->
+                                    </div>
+                                    
+                                    <button class="btn-primary btn-full-width" id="saveVaultBtn" style="margin-top: 20px;">
+                                        <span>Confirm & Save to Vault</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Workspace Explorer Panel -->
+                        <section class="section-container" id="vaultExplorer">
+                            <div class="glass-card section-card">
+                                <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; width: 100%;">
+                                    <h3>Vault Explorer</h3>
+                                    <div class="explorer-filters" style="display: flex; gap: 8px;">
+                                        <button class="btn-secondary btn-sm filter-btn active" data-filter="all">All</button>
+                                        <button class="btn-secondary btn-sm filter-btn" data-filter="projects">Projects</button>
+                                        <button class="btn-secondary btn-sm filter-btn" data-filter="experiences">Experiences</button>
+                                    </div>
+                                </div>
+                                <div class="explorer-grid" id="explorerGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
+                                    <!-- Dynamic list of projects / experiences -->
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+
             <!-- VIEW A: ATS Scan & Analyzer -->
-            <div class="workspace-view active" id="view-ats">
+            <div class="workspace-view" id="view-ats" style="display: none;">
                 <!-- Sidebar for History -->
                 <aside class="sidebar" id="historySidebar">
                     <div class="sidebar-header">
