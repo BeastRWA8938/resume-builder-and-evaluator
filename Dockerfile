@@ -8,6 +8,8 @@ ENV PYTHONUNBUFFERED=1
 # Install system dependencies for PDF/Docx text parsing and XeLaTeX resume compilation
 RUN apt-get update && apt-get install -y --no-install-recommends \
     texlive-xetex \
+    texlive-latex-recommended \
+    texlive-latex-extra \
     texlive-fonts-recommended \
     texlive-plain-generic \
     fonts-liberation \

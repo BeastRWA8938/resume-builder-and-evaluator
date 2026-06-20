@@ -15,6 +15,10 @@ services:
       - ./Resumes:/app/Resumes
       # Mount personal markdown experience vault
       - ./Knowledge Base:/app/Knowledge Base
+      # Mount frontend code for live updates
+      - ./frontend:/app/frontend
+      # Mount LaTeX templates and fonts
+      - ./Resume-Latex:/app/Resume-Latex
     env_file:
       - .env
     environment:

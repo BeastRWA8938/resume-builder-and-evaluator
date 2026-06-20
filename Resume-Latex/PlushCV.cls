@@ -143,9 +143,9 @@
 
 
 % Set main fonts: prefer system/local fonts with XeTeX/LuaTeX, fallback for pdfTeX
-\usepackage[T1]{fontenc}
 \usepackage{iftex}
 \ifPDFTeX
+  \usepackage[T1]{fontenc}
   % pdfLaTeX fallback: TeX Gyre (modern, professional)
   \usepackage{tgheros}
   \usepackage{tgtermes}
