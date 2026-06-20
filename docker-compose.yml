@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  resume-suite:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: resume-suite-app
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist SQLite databases
+      - ./backend:/app/backend
+      # Persist generated output resumes
+      - ./Resumes:/app/Resumes
+      # Mount personal markdown experience vault
+      - ./Knowledge Base:/app/Knowledge Base
+    env_file:
+      - .env
+    environment:
+      - ALLOWED_ORIGINS=*
+      - DATABASE_PATH=/app/backend/resume_analyzer.db
+    restart: unless-stopped
