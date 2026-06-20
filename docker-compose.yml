@@ -12,7 +12,7 @@ services:
       # Persist SQLite databases
       - ./backend:/app/backend
       # Persist generated output resumes
-      - c:/Users/Rushikesh/Documents/Resume:/app/Resumes
+      - ${RESUME_OUTPUT_PATH:-./Resumes}:/app/Resumes
       # Mount personal markdown experience vault
       - ./Knowledge Base:/app/Knowledge Base
       # Mount frontend code for live updates
