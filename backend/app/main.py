@@ -5,9 +5,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
 
-from backend.app.config import validate_config
-from backend.app.database import init_db
-from backend.app.routes import analyze, history, generator, vault
+from backend.app.core.config import validate_config
+from backend.app.core.database import init_db
+from backend.app.routes import ats, resume, vault
 
 # Initialize database
 init_db()
@@ -34,9 +34,8 @@ app.add_middleware(
 )
 
 # Include Modular Routers
-app.include_router(analyze.router)
-app.include_router(history.router)
-app.include_router(generator.router)
+app.include_router(ats.router)
+app.include_router(resume.router)
 app.include_router(vault.router)
 
 # Setup Frontend static directories dynamically if they exist

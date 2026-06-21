@@ -1,7 +1,7 @@
 import sqlite3
 import json
 from datetime import datetime
-from backend.app.config import DATABASE_PATH
+from backend.app.core.config import DATABASE_PATH
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE_PATH)

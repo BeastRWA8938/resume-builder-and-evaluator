@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 import google.generativeai as genai
 from pydantic import BaseModel, Field
-from backend.app.config import ROOT_DIR, GEMINI_API_KEY, GEMINI_MODEL_NAME
+from backend.app.core.config import ROOT_DIR, GEMINI_API_KEY, GEMINI_MODEL_NAME
 
 class ResumeTailoringResult(BaseModel):
     companyResearch: str = Field(description="Short summary of company research and resume tailoring strategy.")

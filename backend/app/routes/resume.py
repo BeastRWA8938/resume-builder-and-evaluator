@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
-from backend.app.generator import tailor_and_compile_resume
+from backend.app.services.resume.generator import tailor_and_compile_resume
 
-router = APIRouter(prefix="/api/generate", tags=["generator"])
+router = APIRouter(prefix="/api/generate", tags=["resume"])
 
 class ResumeGenerateRequest(BaseModel):
     companyName: str

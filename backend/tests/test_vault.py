@@ -1,7 +1,7 @@
 import unittest
 import os
 import sqlite3
-from backend.app.database import init_db, save_project, save_experience, get_projects, get_experiences, delete_project, delete_experience
+from backend.app.core.database import init_db, save_project, save_experience, get_projects, get_experiences, delete_project, delete_experience
 
 class TestVaultDatabase(unittest.TestCase):
     def setUp(self):

@@ -1,7 +1,7 @@
 import json
 import google.generativeai as genai
-from backend.app.config import GEMINI_API_KEY, GEMINI_MODEL_NAME
-from backend.app.models import ATSAnalysisResult
+from backend.app.core.config import GEMINI_API_KEY, GEMINI_MODEL_NAME
+from backend.app.core.models import ATSAnalysisResult
 
 # Configure the Gemini API client
 if GEMINI_API_KEY:

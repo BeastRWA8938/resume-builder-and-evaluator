@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 import google.generativeai as genai
 
-from backend.app.config import GEMINI_API_KEY, GEMINI_MODEL_NAME
-from backend.app.models import KnowledgeExtractionResponse
-from backend.app.database import (
+from backend.app.core.config import GEMINI_API_KEY, GEMINI_MODEL_NAME
+from backend.app.core.models import KnowledgeExtractionResponse
+from backend.app.core.database import (
     save_project, 
     save_experience, 
     get_projects, 
